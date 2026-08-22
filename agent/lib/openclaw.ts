@@ -229,14 +229,16 @@ function executionIdForSession(sessionId: string): string {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-async function computerNode(requestedNodeId?: string): Promise<OpenClawNode> {
+async function nodeWithCommands(
+  requiredCommands: readonly string[],
+  requestedNodeId?: string,
+): Promise<OpenClawNode> {
   const result = await gatewayClient().request<NodeListResult>("node.list", {});
   const configured = requestedNodeId ?? process.env.OPENCLAW_NODE_ID;
   const candidates = result.nodes.filter(
     (node) =>
       node.connected &&
-      node.commands?.includes("screen.snapshot") &&
-      node.commands.includes("computer.act"),
+      requiredCommands.every((command) => node.commands?.includes(command)),
   );
   const node = configured
     ? candidates.find((candidate) => candidate.nodeId === configured)
@@ -245,10 +247,18 @@ async function computerNode(requestedNodeId?: string): Promise<OpenClawNode> {
       candidates[0];
   if (!node) {
     throw new Error(
-      "No paired OpenClaw computer node is connected with screen.snapshot and computer.act enabled.",
+      `No paired OpenClaw node is connected with ${requiredCommands.join(" and ")} enabled.`,
     );
   }
   return node;
+}
+
+function screenNode(requestedNodeId?: string): Promise<OpenClawNode> {
+  return nodeWithCommands(["screen.snapshot"], requestedNodeId);
+}
+
+function computerNode(requestedNodeId?: string): Promise<OpenClawNode> {
+  return nodeWithCommands(["screen.snapshot", "computer.act"], requestedNodeId);
 }
 
 function parseNodePayload(result: NodeInvokeResult): unknown {
@@ -282,7 +292,7 @@ export async function captureOpenClawScreen(
   sessionId: string,
   options: { readonly nodeId?: string; readonly screenIndex?: number } = {},
 ): Promise<OpenClawScreen> {
-  const node = await computerNode(options.nodeId);
+  const node = await screenNode(options.nodeId);
   const screenIndex = options.screenIndex ?? 0;
   const payload = (await invokeNode(node.nodeId, "screen.snapshot", {
     executionId: executionIdForSession(sessionId),
