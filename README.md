@@ -1,5 +1,9 @@
 # Eve Hub
 
+> ### [▶ OPEN THE LIVE PITCH DECK](https://danschewy.github.io/dellxnvidia-chat-platform/)
+>
+> A concise visual tour of Eve's experience, local-first architecture, safety model, and working demo. Use the arrow keys to present, `F` for fullscreen, or `P` to print. The [source HTML](docs/pitch/Eve-Pitch-Deck.html) lives in this repository.
+
 Eve is a mostly-offline enterprise agent hub built for the Dell × NVIDIA AI
 Hackathon. The entire application is self-hosted on a Dell Pro Max GB10: Next.js
 serves the web experience, Eve runs durable agent sessions, Qwen runs through a
