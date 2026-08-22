@@ -1,11 +1,9 @@
 import { defineTool, toolOutput, toolOutputPart } from "eve/tools";
-import { once } from "eve/tools/approval";
 import { z } from "zod";
 import { requireTurnCapability } from "../lib/capabilities";
 import { captureOpenClawScreen } from "../lib/openclaw";
 
 export default defineTool({
-  approval: once(),
   description:
     "Capture the user's current main display through the trusted macOS companion. Only use when screenContext is enabled for this turn.",
   inputSchema: z.object({

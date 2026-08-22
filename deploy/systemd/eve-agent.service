@@ -1,7 +1,7 @@
 [Unit]
 Description=Eve durable agent runtime
-After=network-online.target
-Wants=network-online.target
+After=network-online.target eve-mongo.service
+Wants=network-online.target eve-mongo.service
 
 [Service]
 Type=simple

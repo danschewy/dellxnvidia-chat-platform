@@ -89,7 +89,7 @@ install the user services:
 ```bash
 npm run build
 mkdir -p ~/.config/systemd/user
-cp deploy/systemd/eve-hub.service deploy/systemd/eve-agent.service deploy/systemd/eve-qwen.service ~/.config/systemd/user/
+cp deploy/systemd/eve-mongo.service deploy/systemd/eve-hub.service deploy/systemd/eve-agent.service deploy/systemd/eve-qwen.service ~/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable --now eve-qwen eve-agent eve-hub
 ```

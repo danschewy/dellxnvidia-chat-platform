@@ -1,0 +1,20 @@
+[Unit]
+Description=Eve local MongoDB
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/dell/nividia-dell-hackathon/.local/mongodb-linux-aarch64-ubuntu2404-8.0.5/bin/mongod \
+  --bind_ip 127.0.0.1 \
+  --port 27017 \
+  --dbpath /home/dell/nividia-dell-hackathon/data/db \
+  --logpath /home/dell/nividia-dell-hackathon/data/mongod.log \
+  --logappend
+Restart=always
+RestartSec=3
+TimeoutStopSec=2min
+LimitNOFILE=65536
+
+[Install]
+WantedBy=default.target

@@ -1,7 +1,7 @@
 [Unit]
 Description=Eve local enterprise agent hub
-After=network-online.target eve-agent.service
-Wants=network-online.target eve-agent.service
+After=network-online.target eve-mongo.service eve-agent.service
+Wants=network-online.target eve-mongo.service eve-agent.service
 
 [Service]
 Type=simple
