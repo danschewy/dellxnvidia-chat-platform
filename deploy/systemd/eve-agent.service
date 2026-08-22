@@ -1,0 +1,16 @@
+[Unit]
+Description=Eve durable agent runtime
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dell/eve-hub
+Environment=NODE_ENV=production
+ExecStart=/home/dell/eve-hub/node_modules/.bin/eve start --host 127.0.0.1 --port 4274
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

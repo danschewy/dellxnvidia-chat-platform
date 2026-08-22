@@ -1,0 +1,42 @@
+[Unit]
+Description=Eve Qwen3.6 35B local vLLM server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=HF_HUB_OFFLINE=1
+Environment=TRANSFORMERS_OFFLINE=1
+Environment=PATH=/home/dell/vllm/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+Environment=MAX_JOBS=2
+Environment=CMAKE_BUILD_PARALLEL_LEVEL=2
+Environment=NVCC_THREADS=1
+ExecStart=/home/dell/vllm/.venv/bin/vllm serve /home/dell/eve-hub-models/Qwen3.6-35B-A3B-NVFP4 \
+  --served-model-name Qwen3.6-35B-A3B-NVFP4 \
+  --host 127.0.0.1 \
+  --port 9000 \
+  --quantization modelopt \
+  --tensor-parallel-size 1 \
+  --trust-remote-code \
+  --kv-cache-dtype fp8 \
+  --attention-backend flashinfer \
+  --moe-backend marlin \
+  --gpu-memory-utilization 0.3 \
+  --max-model-len 131072 \
+  --max-num-seqs 2 \
+  --max-num-batched-tokens 4096 \
+  --enable-chunked-prefill \
+  --async-scheduling \
+  --enable-prefix-caching \
+  --load-format fastsafetensors \
+  --reasoning-parser qwen3 \
+  --tool-call-parser qwen3_xml \
+  --enable-auto-tool-choice
+Restart=on-failure
+RestartSec=10
+TimeoutStartSec=30min
+TimeoutStopSec=2min
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=default.target

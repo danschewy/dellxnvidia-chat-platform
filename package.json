@@ -4,14 +4,26 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack && eve build --skip-sandbox-prewarm",
+    "auth:hash": "node scripts/hash-password.mjs",
+    "ingest:sec": "node --env-file=.env.local scripts/ingest-sec.mjs",
+    "verify:business": "node --env-file=.env.local scripts/verify-business-data.mjs",
+    "verify:openshell": "node --env-file=.env.local --import tsx scripts/verify-openshell-survival.ts",
+    "verify:users": "node --env-file=.env.local --import tsx scripts/verify-user-isolation.ts",
     "start": "next start",
+    "start:agent": "eve start --host 127.0.0.1 --port 4274",
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.46",
+    "ai": "^7.0.58",
+    "eve": "^0.44.1",
+    "lucide-react": "^1.33.0",
+    "mongodb": "^7.5.0",
     "next": "16.3.2",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -21,6 +33,10 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
     "tailwindcss": "^4",
+    "tsx": "^4.23.12",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

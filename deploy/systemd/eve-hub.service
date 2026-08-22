@@ -1,0 +1,16 @@
+[Unit]
+Description=Eve local enterprise agent hub
+After=network-online.target eve-agent.service
+Wants=network-online.target eve-agent.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dell/eve-hub
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/npm run start -- --hostname 0.0.0.0 --port 3100
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

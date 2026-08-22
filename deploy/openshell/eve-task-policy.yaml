@@ -1,0 +1,27 @@
+version: 1
+
+# Static filesystem boundary. OpenShell also adds the small runtime baseline
+# required by its supervisor; the agent workspace itself is /sandbox/workspace.
+filesystem_policy:
+  include_workdir: true
+  read_only:
+    - /usr
+    - /lib
+    - /lib64
+    - /bin
+    - /sbin
+    - /etc
+    - /proc
+    - /dev/urandom
+  read_write:
+    - /sandbox
+    - /tmp
+    - /dev/null
+
+landlock:
+  compatibility: best_effort
+
+# Deliberately empty: Eve's ordinary task sandbox has no network egress.
+# Web search and enterprise connectors run through separately capability-gated
+# host tools, never through arbitrary sandbox processes.
+network_policies: {}
