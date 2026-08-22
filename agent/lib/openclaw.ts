@@ -61,7 +61,7 @@ interface NodeInvokeResult {
 export interface OpenClawScreen {
   readonly base64: string;
   readonly capturedAtMs?: number;
-  readonly displayFrameId: string;
+  readonly displayFrameId?: string;
   readonly format: string;
   readonly height: number;
   readonly nodeId: string;
@@ -300,11 +300,25 @@ export async function captureOpenClawScreen(
     maxWidth: 1568,
     quality: 82,
     screenIndex,
-  })) as Omit<OpenClawScreen, "nodeId" | "screenIndex">;
-  if (!payload.base64 || !payload.displayFrameId) {
+  })) as Partial<Omit<OpenClawScreen, "nodeId" | "screenIndex">>;
+  if (
+    typeof payload.base64 !== "string" ||
+    typeof payload.format !== "string" ||
+    typeof payload.height !== "number" ||
+    typeof payload.width !== "number"
+  ) {
     throw new Error("OpenClaw screen.snapshot returned an invalid payload.");
   }
-  return { ...payload, nodeId: node.nodeId, screenIndex };
+  return {
+    base64: payload.base64,
+    capturedAtMs: payload.capturedAtMs,
+    displayFrameId: payload.displayFrameId,
+    format: payload.format,
+    height: payload.height,
+    nodeId: node.nodeId,
+    screenIndex,
+    width: payload.width,
+  };
 }
 
 export async function invokeOpenClawComputerAction(
