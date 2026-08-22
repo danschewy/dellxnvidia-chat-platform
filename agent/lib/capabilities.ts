@@ -29,6 +29,8 @@ const DISABLED_CAPABILITIES: EveHubCapabilities = {
   webSearch: false,
 };
 
+const CLIENT_CONTEXT_PREFIX = "Client context:\n";
+
 function textFromMessage(message: ModelMessage): string {
   if (typeof message.content === "string") return message.content;
   if (!Array.isArray(message.content)) return "";
@@ -44,9 +46,13 @@ export function capabilitiesFromTurn(messages: readonly ModelMessage[]): EveHubC
     if (message.role === "assistant") break;
     if (message.role !== "user") continue;
     const raw = textFromMessage(message).trim();
-    if (!raw.startsWith("{")) continue;
+    if (!raw.startsWith(CLIENT_CONTEXT_PREFIX)) continue;
+    const serializedContext = raw.slice(CLIENT_CONTEXT_PREFIX.length).trim();
+    if (!serializedContext.startsWith("{")) continue;
     try {
-      const parsed = JSON.parse(raw) as { eveHubCapabilities?: Record<string, unknown> };
+      const parsed = JSON.parse(serializedContext) as {
+        eveHubCapabilities?: Record<string, unknown>;
+      };
       const source = parsed.eveHubCapabilities;
       if (!source) continue;
       return {
